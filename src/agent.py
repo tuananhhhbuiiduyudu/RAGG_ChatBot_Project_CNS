@@ -23,9 +23,9 @@ def get_retriever(collection_name : str = "data_test" , persist_path = "./vector
     ## Kết nối tới FAISS và tạo vector retrierver
     try : 
         vectorstore = connect_to_faiss(collection_name=collection_name , persist_path= persist_path)
-        faiss_retrierver = vectorstore.as_retriever(
-            search_type = "similarity"
-            search_kwargs = {"k" : 4}
+        faiss_retriever = vectorstore.as_retriever(
+        search_type="similarity",
+        search_kwargs={"k": 4}
         )
         
         # Tạo BM25 từ toàn bộ documents 
@@ -43,7 +43,7 @@ def get_retriever(collection_name : str = "data_test" , persist_path = "./vector
         
         # Kết hợp cả 2 lại 
         ensemble_retriever = EnsembleRetriever(
-            retrievers=[faiss_retrierver , bm25_retriever],
+            retrievers=[faiss_retriever , bm25_retriever],
             weights=[0.7 , 0.3]
         )
         
@@ -72,25 +72,33 @@ def get_llm_and_agent(_retriever, model_choice="groq"):
             groq_api_key=os.getenv("GROQ_API_KEY"),
             model_name="Llama3-8b-8192",
             temperature=0.0,
-            streaming= True 
+            streaming=True
         )
     else:
         raise ValueError("Model không được hỗ trợ hiện tại")
-    
+
+    # 🛠 tạo tool động dựa trên retriever được truyền vào
+    tool = create_retriever_tool(
+        _retriever,
+        "find",
+        "Search for information of Stack AI."
+    )
+
     tools = [tool]
-    
-    system = """You are an expert at AI. Your name is UDU_GOLOBAL."""
+    system = """You are an expert at AI. Your name is AI_UDU_GOLOBAL."""
     prompt = ChatPromptTemplate.from_messages([
         ("system", system),
         MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
-    # Khởi tạo agent
-    
-    agent = create_openai_functions_agent(llm = llm  , tools = tools  , prompt = prompt)
-    return AgentExecutor(agent=agent, tools=tools, verbose=True)
 
+    agent = create_openai_functions_agent(
+        llm=llm,
+        tools=tools,
+        prompt=prompt
+    )
+    return AgentExecutor(agent=agent, tools=tools, verbose=True)
 # Khởi tạo retriever và agent
-retriever = get_retriever()
-agent_executor = get_llm_and_agent(retriever)
+# retriever = get_retriever()
+# agent_executor = get_llm_and_agent(retriever)
