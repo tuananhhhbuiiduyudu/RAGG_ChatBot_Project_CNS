@@ -24,7 +24,7 @@ def get_retriever(collection_name : str = "data_test" , persist_path = "./vector
     try : 
         vectorstore = connect_to_faiss(collection_name=collection_name , persist_path= persist_path)
         faiss_retrierver = vectorstore.as_retriever(
-            search_type = "similaryty",
+            search_type = "similarity"
             search_kwargs = {"k" : 4}
         )
         

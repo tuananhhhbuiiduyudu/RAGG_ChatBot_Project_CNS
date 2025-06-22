@@ -80,7 +80,8 @@ def connect_to_faiss(collection_name : str ,  persist_path = "./vectorstores") -
 
     vectorstore = FAISS.load_local(
         folder_path=f"{persist_path}/{collection_name}",
-        embeddings = embeddings
+        embeddings = embeddings,
+        allow_dangerous_deserialization=True  # thêm dòng này!
     )
     print(f"Loaded FAISS vectorstore from {persist_path}/{collection_name}")
     return vectorstore
