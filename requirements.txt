@@ -17,6 +17,7 @@ tiktoken>=0.7.0
 
 # Vector Database & Search
 chromadb>=0.4.0
+faiss-cpu
 sqlalchemy>=2.0.0
 rank-bm25>=0.2.2
 
@@ -33,3 +34,5 @@ streamlit>=1.39.0
 requests>=2.31.0
 tqdm>=4.65.0
 PyYAML>=6.0.0
+
+sentence-transformers
