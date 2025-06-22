@@ -18,11 +18,9 @@ def load_data_from_local(filename : str , directory : str) -> tuple:
     
     return data , filename.rsplit('.' , 1)[0].replace('_' , ' ')
 
-def seed_faiss(collection_name : str  , filename : str , directory : str , use_ollama : bool = False , save_path: str = "./vectorstores") -> FAISS : 
-    if use_ollama : 
-        embeddings = OllamaEmbeddings(model="llama2")
-    else : 
-        embeddings = HuggingFaceEmbeddings(model_name = "all-MiniLM-L6-v2")
+def seed_faiss(collection_name : str  , filename : str , directory : str , save_path: str = "./vectorstores") -> FAISS : 
+ 
+    embeddings = HuggingFaceEmbeddings(model_name = "all-MiniLM-L6-v2")
     
     # Đọc dữ liệu từ file_local : 
     local_data , doc_name = load_data_from_local(filename , directory)
@@ -51,11 +49,9 @@ def seed_faiss(collection_name : str  , filename : str , directory : str , use_o
     print(f"FAISS vectorstore saved to {os.path.join(save_path, collection_name)}")
     return vectorstore
 
-def seed_faiss_live(URL : str , collection_name : str , doc_name : str , use_ollama : bool , save_path: str = "./vectorstores" ) -> FAISS :   
-    if use_ollama : 
-        embeddings = OllamaEmbeddings(model="llama2")
-    else : 
-        embeddings = HuggingFaceEmbeddings(model_name = "all-MiniLM-L6-v2")
+def seed_faiss_live(URL : str , collection_name : str , doc_name : str , save_path: str = "./vectorstores" ) -> FAISS :   
+
+    embeddings = HuggingFaceEmbeddings(model_name = "all-MiniLM-L6-v2")
     
     documens = craw_web(URL)
     
@@ -78,11 +74,9 @@ def seed_faiss_live(URL : str , collection_name : str , doc_name : str , use_oll
     print(f"FAISS vectorstore saved to {os.path.join(save_path, collection_name)}")
     return vectorstore
 
-def connect_to_seed(collection_name : str ,use_ollama: bool = False , persist_path = "./vectorstores") -> FAISS : 
-    if use_ollama:
-        embeddings = OllamaEmbeddings(model="llama2")
-    else:
-        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+def connect_to_faiss(collection_name : str ,  persist_path = "./vectorstores") -> FAISS : 
+
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
     vectorstore = FAISS.load_local(
         folder_path=f"{persist_path}/{collection_name}",
@@ -105,7 +99,6 @@ def main():
         URL='https://www.stack-ai.com/docs',
         collection_name= "data_test_live",
         doc_name='stack-ai',
-        use_ollama= False 
     )
     
 

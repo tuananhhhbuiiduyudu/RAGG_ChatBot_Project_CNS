@@ -36,3 +36,4 @@ tqdm>=4.65.0
 PyYAML>=6.0.0
 
 sentence-transformers
+langchain_groq
