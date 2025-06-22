@@ -77,6 +77,19 @@ def seed_faiss_live(URL : str , collection_name : str , doc_name : str , use_oll
     vectorstore.save_local(os.path.join(save_path , collection_name))
     print(f"FAISS vectorstore saved to {os.path.join(save_path, collection_name)}")
     return vectorstore
+
+def connect_to_seed(collection_name : str ,use_ollama: bool = False , persist_path = "./vectorstores") -> FAISS : 
+    if use_ollama:
+        embeddings = OllamaEmbeddings(model="llama2")
+    else:
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+    vectorstore = FAISS.load_local(
+        folder_path=f"{persist_path}/{collection_name}",
+        embeddings = embeddings
+    )
+    print(f"Loaded FAISS vectorstore from {persist_path}/{collection_name}")
+    return vectorstore
     
     
 def main():
